@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Logged out{% endblock %}
+
+{% block content %}
+<h1>Выход из системы</h1>
+
+{% if user.is_authenticated %}
+    <p>Вы уже вышли из системы.</p>
+{% else %}
+    <p>
+        Вы успешно вышли из системы.
+        Вы можете <a href="{% url 'login' %}">войти снова</a>.
+    </p>
+{% endif %}
+
+{% endblock %}

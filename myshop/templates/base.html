@@ -1,0 +1,36 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div id="header">
+        <a href="/" class="logo">Мой магазин</a>
+        {% if request.user.is_authenticated %}
+            <ul class="menu">
+                 <li {% if section == "dashboard" %} class="selected" {% endif %}>
+                   <a href="{% url 'dashboard' %}">Мой профиль</a>
+                 </li>
+            </ul>
+        {% endif %}
+        <span class="user">
+            {% if request.user.is_authenticated %}
+                Здравствуйте {{ request.user.first_name|default:request.user.username }},
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Вход</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

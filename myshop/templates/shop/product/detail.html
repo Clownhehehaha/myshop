@@ -1,0 +1,56 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+{% block content %}
+    <div class="product-detail">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <img src="/media/products/default.jpg" alt="Заглушка">
+        {% endif %}
+        <h1>{{ product.name }}</h1>
+        <h2>
+            <a href="{{ product.category.get_absolute_url }}">
+                {{ product.category }}
+            </a>
+        </h2>
+        <p class="price">${{ product.price }}</p>
+        <form action="{% url 'cart:cart_add' product.id %}" method="post">
+             {{ cart_product_form }}
+             {% csrf_token %}
+             <input type="submit" value="Добавить в корзину">
+        </form>
+
+        {{ product.description|linebreaks }}
+    </div>
+
+    <hr>
+
+    <!-- Отзывы -->
+    <h2>Отзывы</h2>
+    {% for review in reviews %}
+        <div class="review">
+            <strong>{{ review.user.username }}</strong>
+            <p>Rating: {{ review.rating }} / 5</p>
+            <p>{{ review.comment }}</p>
+            <small>Posted on {{ review.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>Отзывов еще нет. Оставьте первым! </p>
+    {% endfor %}
+
+    <!-- Форма для добавления отзыва -->
+    <hr>
+    <h3>Add a review</h3>
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Оставить отзыв</button>
+        </form>
+    {% else %}
+        <p>Вы должны быть авторизованы чтобы оставить отзыв. <a href="{% url 'login' %}">Вход</a>.</p>
+    {% endif %}
+{% endblock %}
